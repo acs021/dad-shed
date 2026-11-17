@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f3ecdf;
+  --foreground: #2a2118;
+  --cedar: #7a3e24;
+  --card: #fffaf3;
+  --line: #e2d3bf;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-cedar: var(--cedar);
+  --color-card: var(--card);
+  --color-line: var(--line);
+  --font-sans: var(--font-outfit);
+  --font-display: var(--font-fraunces);
+}
+
+body {
+  font-family: var(--font-outfit), "Segoe UI", sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-fraunces), Georgia, serif;
+}

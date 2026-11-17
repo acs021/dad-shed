@@ -1,0 +1,5 @@
+{
+  "name": "dad-shed",
+  "install": "if [ -f package-lock.json ]; then npm ci; fi",
+  "start": "if [ -f package.json ]; then exec npm run dev; else exit 0; fi"
+}
