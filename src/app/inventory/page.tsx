@@ -3,7 +3,7 @@ import { Status } from "@/components/bits";
 import { privatePage } from "@/server/chrome";
 import { browseItems } from "@/server/queries";
 
-const TINTS = ["#1c3b30", "#3d6b35", "#8a4630", "#24556b", "#6b4b2a", "#5c3d55", "#3e4a62", "#6a5340"];
+const TINTS = ["#0d7377", "#1c4067", "#8d3d32", "#24556b", "#5c3d55", "#1a5c62", "#3e4a62", "#6a3a2a"];
 
 export default async function InventoryPage({
   searchParams,

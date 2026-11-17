@@ -13,7 +13,7 @@ export default async function LoginPage() {
   if (actor?.status === "approved") redirect("/");
   return (
     <PublicFrame demo={gate.demo}>
-      <div className="stack">
+      <div className="stack auth">
         <h1>Sign in</h1>
         <ShedForm action={loginAction}>
           <label>

@@ -166,9 +166,12 @@ export async function homeFor(actor: Actor) {
 export async function browseItems(actor: Actor, filters: { q: string; category: string; onlyFree: boolean }) {
   requireApproved(actor);
   const frame = await loadFrame(actor);
-  const params: unknown[] = [actor.groupId, actor.id];
+  const params: unknown[] = [actor.groupId];
   const clauses = ["i.group_id = $1"];
-  if (actor.role !== "admin") clauses.push(`(i.listing <> 'hidden' or i.owner_id = $2)`);
+  if (actor.role !== "admin") {
+    params.push(actor.id);
+    clauses.push("(i.listing <> 'hidden' or i.owner_id = $2)");
+  }
   if (filters.category) {
     params.push(filters.category);
     clauses.push(`i.category = $${params.length}`);

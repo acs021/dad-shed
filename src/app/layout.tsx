@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import "@fontsource/fraunces/600.css";
-import "@fontsource/fraunces/700.css";
+import "@fontsource/bodoni-moda/400.css";
+import "@fontsource/bodoni-moda/500.css";
+import "@fontsource/outfit/300.css";
 import "@fontsource/outfit/400.css";
 import "@fontsource/outfit/500.css";
-import "@fontsource/outfit/600.css";
+import "@fontsource/roboto-mono/400.css";
+import "@fontsource/roboto-mono/500.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -14,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#1c3b30",
+  themeColor: "#0b1016",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",

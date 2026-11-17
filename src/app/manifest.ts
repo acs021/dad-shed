@@ -7,7 +7,7 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "Borrow gear from the block.",
     start_url: "/",
     display: "standalone",
-    background_color: "#efe6d6",
-    theme_color: "#1c3b30",
+    background_color: "#0b1016",
+    theme_color: "#0b1016",
   };
 }

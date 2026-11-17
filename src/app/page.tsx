@@ -16,40 +16,54 @@ export default async function HomePage() {
     return (
       <PublicFrame demo={gate.demo}>
         <section className="hero">
-          <p className="eyebrow">{gate.group.name}</p>
-          <h1>The good stuff, already on the block.</h1>
-          <p className="lede">
-            {gate.group.tagline || "A private lend library for neighbors. Tools, tents, chairs, the pressure washer."}
-          </p>
-          <p className="muted">
-            {stats.members} neighbors · {stats.items} things on the wall. The gear stays off this page until you're in.
-          </p>
-          <div className="actions">
-            <a className="button" href="/join">
-              I have an invite
-            </a>
-            <a className="button quiet" href="/login">
-              Sign in
-            </a>
+          <div className="hero-copy">
+            <p className="eyebrow">{gate.group.name}</p>
+            <h1>The good stuff, already on the block.</h1>
+            <p className="lede">
+              {gate.group.tagline || "A private lend library for neighbors. Tools, tents, chairs, the pressure washer."}
+            </p>
+            <div className="actions">
+              <a className="button" href="/join">
+                I have an invite
+              </a>
+              <a className="button quiet" href="/login">
+                Sign in
+              </a>
+            </div>
           </div>
-          <div className="steps">
-            <article className="step">
-              <strong>1. An admin lets you in</strong>
+          <aside className="hero-panel">
+            <p className="stat">
+              <strong>{stats.members}</strong>
+              <span>neighbors in</span>
+            </p>
+            <p className="stat">
+              <strong>{stats.items}</strong>
+              <span>things on the wall</span>
+            </p>
+            <p className="muted">The gear stays off this page until you're in.</p>
+          </aside>
+          <ol className="steps">
+            <li className="step">
+              <span className="step-no">01</span>
+              <strong>An admin lets you in</strong>
               <p className="muted">Invite code first. Then someone already in the shed approves you.</p>
-            </article>
-            <article className="step">
-              <strong>2. List what you'll lend</strong>
+            </li>
+            <li className="step">
+              <span className="step-no">02</span>
+              <strong>List what you'll lend</strong>
               <p className="muted">A name, a photo, and a link if someone should read up before they borrow it.</p>
-            </article>
-            <article className="step">
-              <strong>3. Ask, then pick it up</strong>
+            </li>
+            <li className="step">
+              <span className="step-no">03</span>
+              <strong>Ask, then pick it up</strong>
               <p className="muted">The owner says yes. Directions and gate notes show up after that.</p>
-            </article>
-            <article className="step">
-              <strong>4. Bring it back</strong>
+            </li>
+            <li className="step">
+              <span className="step-no">04</span>
+              <strong>Bring it back</strong>
               <p className="muted">Check it out, check it in, and the owner confirms it's home.</p>
-            </article>
-          </div>
+            </li>
+          </ol>
         </section>
       </PublicFrame>
     );
@@ -59,7 +73,7 @@ export default async function HomePage() {
     const home = await homeFor(actor);
     return (
       <div className="stack">
-        <div>
+        <div className="mast">
           <p className="eyebrow">Good to see you</p>
           <h1>{actor.name.split(" ")[0]}</h1>
         </div>
