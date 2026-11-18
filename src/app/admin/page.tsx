@@ -17,7 +17,7 @@ export default function AdminPage() {
           <div>
             <p className="eyebrow">Admin</p>
             <h1>{data.group.name}</h1>
-            <p className="muted">Invites get people to the door. You still approve each one.</p>
+            <p className="lede">Invites get people to the door. You still approve each one.</p>
           </div>
           <section className="section">
             <h2>Waiting</h2>

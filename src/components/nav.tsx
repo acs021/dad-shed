@@ -38,14 +38,14 @@ function Icon({ label }: { label: string }) {
   if (label === "Wall") {
     return (
       <svg {...common}>
-        <path d="M4 9h16M6 9v9h12V9M9 18v-4h6v4" />
+        <path d="M5 10h14M7 10v9h10V10M10 19v-5h4v5" />
       </svg>
     );
   }
-  if (label === "Loans") {
+  if (label === "Out") {
     return (
       <svg {...common}>
-        <path d="M7 7h11v11M7 18 18 7" />
+        <path d="M7 7h10v10M7 17 17 7" />
       </svg>
     );
   }
@@ -56,7 +56,7 @@ function Icon({ label }: { label: string }) {
       </svg>
     );
   }
-  if (label === "Block") {
+  if (label === "People") {
     return (
       <svg {...common}>
         <circle cx="9" cy="9" r="2.2" />

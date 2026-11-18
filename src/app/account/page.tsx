@@ -10,7 +10,7 @@ export default function AccountPage() {
         <div>
           <p className="eyebrow">You</p>
           <h1>{ctx.actor.name}</h1>
-          <p className="muted">Gate codes stay off the wall until you approve a borrow.</p>
+          <p className="lede">Gate codes stay off the wall until you approve a borrow.</p>
         </div>
         <ShedForm action={profileAction}>
           <MemberFields values={ctx.actor} />

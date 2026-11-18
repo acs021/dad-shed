@@ -8,8 +8,9 @@ export default function AsksPage() {
       <div className="stack">
         <div className="row">
           <div>
-            <p className="eyebrow">The board</p>
-            <h1>Ask the shed</h1>
+            <p className="eyebrow">Asks</p>
+            <h1>If the wall missed it</h1>
+            <p className="lede">Look first. If nobody listed it, the block still might have one in a garage.</p>
           </div>
           <a className="button" href="/asks/new">
             New ask

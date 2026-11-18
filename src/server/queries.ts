@@ -132,11 +132,18 @@ export async function homeFor(actor: Actor) {
     })
     .filter((loan): loan is NonNullable<typeof loan> => loan !== null);
 
-  const recent = await sql<{ id: string; title: string; category: string; owner_name: string }>(
-    `select i.id, i.title, i.category, m.name as owner_name
+  const recent = await sql<{
+    id: string;
+    title: string;
+    category: string;
+    owner_name: string;
+    owner_city: string;
+    photo_data: string;
+  }>(
+    `select i.id, i.title, i.category, i.photo_data, m.name as owner_name, m.city as owner_city
      from items i join members m on m.id = i.owner_id
      where i.group_id = $1 and i.listing = 'available'
-     order by i.created_at desc limit 6`,
+     order by i.created_at desc limit 8`,
     [actor.groupId],
   );
   const asks = await sql<{ id: string; title: string; author_name: string }>(

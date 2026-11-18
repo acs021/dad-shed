@@ -2,11 +2,10 @@ import { logoutAction } from "@/server/actions";
 import { SideNav } from "@/components/nav";
 
 const LINKS = [
-  { href: "/", label: "Home" },
-  { href: "/inventory", label: "Wall" },
-  { href: "/borrows", label: "Loans" },
+  { href: "/", label: "Wall" },
+  { href: "/borrows", label: "Out" },
   { href: "/asks", label: "Asks" },
-  { href: "/members", label: "Block" },
+  { href: "/members", label: "People" },
   { href: "/account", label: "You" },
 ];
 
@@ -25,7 +24,6 @@ export function Shell({
   children: React.ReactNode;
 }) {
   const side = frame.role === "admin" ? [...LINKS, { href: "/admin", label: "Admin" }] : LINKS;
-  const tabs = LINKS.filter((link) => link.href !== "/");
   return (
     <div className="app">
       <header className="topbar">
@@ -46,8 +44,8 @@ export function Shell({
             Notes
             {frame.unread ? <span>{frame.unread}</span> : null}
           </a>
-          <form action={logoutAction}>
-            <button className="button quiet desktop-only">Sign out</button>
+          <form className="desktop-only" action={logoutAction}>
+            <button className="button quiet" type="submit">Sign out</button>
           </form>
         </div>
       </header>
@@ -56,11 +54,12 @@ export function Shell({
       ) : null}
       <div className="frame">
         <aside className="sidebar">
+          <p className="nav-kicker">In the shed</p>
           <SideNav links={side} variant="side" />
         </aside>
         <main id="content">{children}</main>
       </div>
-      <SideNav links={tabs} variant="tab" />
+      <SideNav links={LINKS} variant="tab" />
     </div>
   );
 }
@@ -69,8 +68,8 @@ export function Mark() {
   return (
     <span className="mark" aria-hidden="true">
       <svg viewBox="0 0 32 32" width="28" height="28">
-        <path d="M5 14 L16 6 L27 14 V26 H5 Z" fill="none" stroke="currentColor" strokeWidth="1.7" />
-        <path d="M13 26 V18 H19 V26" fill="none" stroke="currentColor" strokeWidth="1.7" />
+        <path d="M5 14 L16 6 L27 14 V26 H5 Z" fill="none" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M13 26 V18 H19 V26" fill="none" stroke="currentColor" strokeWidth="1.8" />
       </svg>
     </span>
   );

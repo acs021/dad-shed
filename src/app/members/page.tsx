@@ -7,9 +7,9 @@ export default function MembersPage() {
     return (
       <div className="stack">
         <div>
-          <p className="eyebrow">The block</p>
-          <h1>Who's in</h1>
-          <p className="muted">Phone numbers and street addresses show up when a borrow is approved, not on this list.</p>
+          <p className="eyebrow">People</p>
+          <h1>Who's on the block</h1>
+          <p className="lede">Phone numbers and street addresses show up when a borrow is approved, not on this list.</p>
         </div>
         <div className="cards two">
           {members.map((member) => (

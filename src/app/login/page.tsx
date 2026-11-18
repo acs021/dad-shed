@@ -14,7 +14,9 @@ export default async function LoginPage() {
   return (
     <PublicFrame demo={gate.demo}>
       <div className="stack auth">
-        <h1>Sign in</h1>
+        <p className="eyebrow">Dad Shed</p>
+        <h1>Come in.</h1>
+        <p className="lede">The wall stays behind the door until you sign in.</p>
         <ShedForm action={loginAction}>
           <label>
             Email

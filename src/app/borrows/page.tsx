@@ -12,10 +12,11 @@ export default function BorrowsPage() {
     return (
       <div className="stack">
         <div>
-          <p className="eyebrow">Loans</p>
-          <h1>Out and back</h1>
+          <p className="eyebrow">Out</p>
+          <h1>Take it, bring it back</h1>
+          <p className="lede">Requests, checkouts, and returns live here after you find something on the wall.</p>
         </div>
-        <LoanList title="In your hands" loans={mine} today={data.today} empty="You're not borrowing anything." />
+        <LoanList title="In your hands" loans={mine} today={data.today} empty="You're not borrowing anything. Start on the wall." />
         <LoanList title="From your wall" loans={theirs} today={data.today} empty="Nobody has your stuff right now." />
       </div>
     );

@@ -1,13 +1,17 @@
 import { redirect } from "next/navigation";
 import { PublicFrame } from "@/components/shell";
-import { Status } from "@/components/bits";
+import { Wall } from "@/components/wall";
 import { getActor } from "@/server/current";
 import { privatePage } from "@/server/chrome";
 import { homeFor, publicStats, shedGate } from "@/server/queries";
 import { humanDate } from "@/lib/text";
-import { borrowStatusLabel } from "@/lib/present";
+import { CATEGORIES } from "@/lib/constants";
 
-export default async function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; category?: string; free?: string }>;
+}) {
   const gate = await shedGate();
   if (!gate.group) redirect("/setup");
   const actor = await getActor();
@@ -18,10 +22,8 @@ export default async function HomePage() {
         <section className="hero">
           <div className="hero-copy">
             <p className="eyebrow">{gate.group.name}</p>
-            <h1>The good stuff, already on the block.</h1>
-            <p className="lede">
-              {gate.group.tagline || "A private lend library for neighbors. Tools, tents, chairs, the pressure washer."}
-            </p>
+            <h1>Borrow it from someone on the block.</h1>
+            <p className="lede">A private lend library for neighbors. Tools, tents, chairs, the pressure washer.</p>
             <div className="actions">
               <a className="button" href="/join">
                 I have an invite
@@ -33,35 +35,27 @@ export default async function HomePage() {
           </div>
           <aside className="hero-panel">
             <p className="stat">
+              <strong>{stats.items}</strong>
+              <span>on the wall</span>
+            </p>
+            <p className="stat">
               <strong>{stats.members}</strong>
               <span>neighbors in</span>
             </p>
-            <p className="stat">
-              <strong>{stats.items}</strong>
-              <span>things on the wall</span>
-            </p>
-            <p className="muted">The gear stays off this page until you're in.</p>
+            <p className="muted">Look first. Ask if it isn’t listed. Pickup notes stay hidden until the owner says yes.</p>
           </aside>
-          <ol className="steps">
-            <li className="step">
-              <span className="step-no">01</span>
-              <strong>An admin lets you in</strong>
-              <p className="muted">Invite code first. Then someone already in the shed approves you.</p>
+          <ol className="rail">
+            <li>
+              <span>Look</span>
+              Browse the wall. If it isn’t there, post an ask.
             </li>
-            <li className="step">
-              <span className="step-no">02</span>
-              <strong>List what you'll lend</strong>
-              <p className="muted">A name, a photo, and a link if someone should read up before they borrow it.</p>
+            <li>
+              <span>Ask</span>
+              The owner says yes. Then you get the address and gate notes.
             </li>
-            <li className="step">
-              <span className="step-no">03</span>
-              <strong>Ask, then pick it up</strong>
-              <p className="muted">The owner says yes. Directions and gate notes show up after that.</p>
-            </li>
-            <li className="step">
-              <span className="step-no">04</span>
-              <strong>Bring it back</strong>
-              <p className="muted">Check it out, check it in, and the owner confirms it's home.</p>
+            <li>
+              <span>Take it</span>
+              Check it out, use it, bring it back. The owner confirms it’s home.
             </li>
           </ol>
         </section>
@@ -69,78 +63,33 @@ export default async function HomePage() {
     );
   }
   if (actor.status !== "approved") redirect(actor.status === "pending" ? "/waiting" : "/suspended");
+  const params = await searchParams;
+  const q = (params.q ?? "").trim().slice(0, 80);
+  const category = CATEGORIES.some((entry) => entry.id === params.category) ? params.category! : "";
+  const onlyFree = params.free === "1";
   return privatePage(async ({ today }) => {
     const home = await homeFor(actor);
-    return (
-      <div className="stack">
-        <div className="mast">
-          <p className="eyebrow">Good to see you</p>
-          <h1>{actor.name.split(" ")[0]}</h1>
-        </div>
-        {home.overdue.map((loan) => (
-          <p className="banner warn" key={`${loan.itemId}-overdue`}>
-            {loan.title} is overdue with {loan.borrowerName}. Due {humanDate(loan.dueOn, today)}.
-          </p>
-        ))}
-        <section className="section">
-          <h2>Waiting on you</h2>
-          {home.waitingOnYou.length === 0 ? <p className="muted">No borrow requests.</p> : null}
-          {home.waitingOnYou.map((loan) => (
-            <a className="card" key={loan.itemId + loan.borrowerId} href={`/inventory/${loan.itemId}`}>
-              <strong>{loan.borrowerName}</strong> wants {loan.title}
-            </a>
-          ))}
-        </section>
-        <section className="section">
-          <div className="row">
-            <h2>In motion</h2>
-            <a href="/borrows">All loans</a>
-          </div>
-          {home.borrowing.length + home.lending.length === 0 ? <p className="muted">Nothing checked out.</p> : null}
-          {[...home.borrowing, ...home.lending].map((loan) => (
-            <a className="card" key={loan.itemId + loan.status + loan.borrowerId} href={`/inventory/${loan.itemId}`}>
-              <div className="row">
-                <strong>{loan.title}</strong>
-                <Status
-                  label={borrowStatusLabel(loan.status, loan.dueOn < today && (loan.status === "checked_out" || loan.status === "return_pending"))}
-                  tone={loan.dueOn < today && loan.status === "checked_out" ? "warn" : "muted"}
-                />
-              </div>
+    const notices =
+      home.waitingOnYou.length + home.overdue.length === 0 ? null : (
+        <section className="pulse">
+          {home.overdue.map((loan) => (
+            <a className="pulse-item warn" key={`${loan.itemId}-overdue`} href={`/inventory/${loan.itemId}`}>
+              <p className="eyebrow">Overdue</p>
+              <strong>{loan.title}</strong>
               <p className="muted">
-                {loan.borrowerId === actor.id ? `From ${loan.ownerName}` : `With ${loan.borrowerName}`} · due {humanDate(loan.dueOn, today)}
+                With {loan.borrowerName}. Due {humanDate(loan.dueOn, today)}.
               </p>
             </a>
           ))}
-        </section>
-        <section className="section">
-          <div className="row">
-            <h2>Anyone got one?</h2>
-            <a href="/asks">The board</a>
-          </div>
-          {home.asks.length === 0 ? <p className="muted">No open asks.</p> : null}
-          {home.asks.map((ask) => (
-            <a className="card" key={ask.id} href={`/asks/${ask.id}`}>
-              <strong>{ask.title}</strong>
-              <p className="muted">{ask.author_name}</p>
+          {home.waitingOnYou.map((loan) => (
+            <a className="pulse-item" key={loan.itemId + loan.borrowerId} href={`/inventory/${loan.itemId}`}>
+              <p className="eyebrow">Waiting on you</p>
+              <strong>{loan.title}</strong>
+              <p className="muted">{loan.borrowerName} asked to borrow it.</p>
             </a>
           ))}
         </section>
-        <section className="section">
-          <div className="row">
-            <h2>On the wall</h2>
-            <a href="/inventory">Browse</a>
-          </div>
-          <div className="cards two">
-            {home.recent.map((item) => (
-              <a className="card" key={item.id} href={`/inventory/${item.id}`}>
-                <p className="eyebrow">{item.categoryLabel}</p>
-                <strong>{item.title}</strong>
-                <p className="muted">{item.owner_name}</p>
-              </a>
-            ))}
-          </div>
-        </section>
-      </div>
-    );
+      );
+    return <Wall actor={actor} q={q} category={category} onlyFree={onlyFree} notices={notices} />;
   });
 }

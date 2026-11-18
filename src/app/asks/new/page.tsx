@@ -10,6 +10,7 @@ export default async function NewAskPage({ searchParams }: { searchParams: Promi
       <div>
         <p className="eyebrow">Not on the wall</p>
         <h1>Ask the block</h1>
+        <p className="lede">Someone may already have it. This post goes to the shed, not the public internet.</p>
       </div>
       <ShedForm action={createAskAction}>
         <label>
