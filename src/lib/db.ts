@@ -1,11 +1,14 @@
-import { readdir, readFile } from "node:fs/promises";
+import { mkdir, readdir, readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { PGlite } from "@electric-sql/pglite";
 import pg from "pg";
 
 const databaseUrl = process.env.DATABASE_URL?.trim() ?? "";
+const localDir = join(process.cwd(), ".data", "pglite");
 let pool: pg.Pool | undefined;
-let local: Promise<PGlite> | undefined;
 let seeded: Promise<void> | undefined;
+
+const globalForDb = globalThis as unknown as { localDb?: Promise<PGlite> };
 
 type Row = Record<string, unknown>;
 
@@ -14,11 +17,7 @@ export async function sql<T = Row>(text: string, params: unknown[] = []): Promis
     pool ??= new pg.Pool({ connectionString: databaseUrl, max: 5 });
     return (await pool.query(text, params)).rows as T[];
   }
-  local ??= startLocal().catch((error: unknown) => {
-    local = undefined;
-    throw error;
-  });
-  return (await (await local).query<T>(text, params)).rows;
+  return (await (await localDb()).query<T>(text, params)).rows;
 }
 
 export async function withTransaction<T>(
@@ -45,11 +44,7 @@ export async function withTransaction<T>(
       client.release();
     }
   }
-  local ??= startLocal().catch((error: unknown) => {
-    local = undefined;
-    throw error;
-  });
-  const db = await local;
+  const db = await localDb();
   return db.transaction(async (tx) => {
     return fn(async <R = Row>(text: string, params: unknown[] = []) => {
       return (await tx.query<R>(text, params)).rows;
@@ -57,11 +52,28 @@ export async function withTransaction<T>(
   });
 }
 
+function localDb(): Promise<PGlite> {
+  globalForDb.localDb ??= startLocal().catch((error: unknown) => {
+    globalForDb.localDb = undefined;
+    throw error;
+  });
+  return globalForDb.localDb;
+}
+
 async function startLocal(): Promise<PGlite> {
-  const db = new PGlite();
+  await mkdir(join(process.cwd(), ".data"), { recursive: true });
+  const db = new PGlite(localDir);
+  await db.exec(
+    "create table if not exists schema_migrations (name text primary key, applied_at timestamptz not null default now())",
+  );
+  const done = new Set(
+    (await db.query<{ name: string }>("select name from schema_migrations")).rows.map((row) => row.name),
+  );
   const files = (await readdir("migrations").catch(() => [])).filter((file) => file.endsWith(".sql")).sort();
   for (const file of files) {
-    await db.exec(await readFile(`migrations/${file}`, "utf8"));
+    if (done.has(file)) continue;
+    await db.exec(await readFile(join("migrations", file), "utf8"));
+    await db.query("insert into schema_migrations (name) values ($1)", [file]);
   }
   return db;
 }

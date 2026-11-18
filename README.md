@@ -7,7 +7,7 @@ npm install
 npm run dev
 ```
 
-Open http://127.0.0.1:3000. With no `DATABASE_URL`, the app uses a local sample block:
+Open http://127.0.0.1:3000. With no `DATABASE_URL`, the app keeps a local store in `.data` and fills an empty one with a sample block:
 
 - `sam@cedar.example` is the admin. `maria`, `chris`, `priya`, `ben`, and `jordan` also exist at `@cedar.example`.
 - Password: `shed-sample`
